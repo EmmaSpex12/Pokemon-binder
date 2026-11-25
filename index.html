@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>My Pokémon Notebook</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;min-height:100vh;color:#2a1c10;font:15px/1.4 system-ui,-apple-system,"Segoe UI",sans-serif;background:radial-gradient(circle at 50% 0,#4a3020,#1d120b 70%);padding:env(safe-area-inset-top,0) 0 env(safe-area-inset-bottom,0)}
+.top{max-width:1100px;margin:0 auto;padding:12px 12px 6px;display:flex;gap:8px;flex-wrap:wrap;align-items:center;justify-content:space-between;color:#f4e6cf}
+h1{margin:0;font:700 22px "Bradley Hand","Segoe Print","Comic Sans MS",cursive}
+.btn{border:0;border-radius:10px;padding:9px 13px;font:inherit;font-weight:600;cursor:pointer;background:#e8b64a;color:#2a1c10}
+.btn.g{background:#f4e6cf;color:#2a1c10}.btn.d{background:#b8352b;color:#fff}.btn:disabled{opacity:.5}
+.tools{max-width:1100px;margin:0 auto;padding:0 12px 8px;display:flex;gap:8px;flex-wrap:wrap}
+input,select,textarea{padding:9px;border-radius:8px;border:1px solid #cdbb98;background:#fffaf0;color:#2a1c10;font:inherit;width:100%}
+.tools input{flex:1;min-width:140px;width:auto}
+.book{max-width:1100px;margin:0 12px;margin-inline:auto;background:linear-gradient(135deg,#7a4524,#3c2011);border-radius:16px;padding:14px;box-shadow:0 14px 40px #000a}
+@media (min-width:1124px){.book{margin-inline:auto}}
+.spread{display:flex;position:relative;gap:0}
+.paper{flex:1;min-width:0;background:#fbf6e6 repeating-linear-gradient(#0000 0 27px,#e6dcc0 27px 28px);padding:14px 14px 8px;position:relative;box-shadow:inset 0 0 22px #b9a77a55}
+.paper:first-child{border-radius:6px 0 0 6px}.paper:last-child{border-radius:0 6px 6px 0}.paper:only-child{border-radius:6px}
+.paper:before{content:"";position:absolute;left:0;top:0;bottom:0;width:2px;background:#d9544a77}
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:9px}
+.pn{text-align:center;font:italic 13px Georgia,serif;color:#8a7650;padding-top:6px}
+.rings{display:none}
+@media (min-width:760px){.rings{display:block;position:absolute;left:50%;top:10px;bottom:10px;width:22px;margin-left:-11px;z-index:2;background:repeating-linear-gradient(#0000 0 14px,#d8d8d8 14px 24px);border-radius:6px;box-shadow:0 0 6px #0008}}
+.slot{aspect-ratio:5/7;border-radius:6px;padding:0;position:relative;overflow:hidden;cursor:pointer;background:#c9d6e033;border:1px solid #0002;box-shadow:inset 0 0 8px #0002}
+.slot.f{border:1px solid #0004;background:#222}
+.slot img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.slot.f:after{content:"";position:absolute;inset:0;background:linear-gradient(120deg,#fff0 35%,#ffffff33 50%,#fff0 65%);pointer-events:none}
+.ph{position:absolute;inset:0;display:flex;flex-direction:column;justify-content:space-between;padding:7px;color:#fff;text-align:left}
+.ph b{font-size:12px;line-height:1.1}.ph span{font-size:10px;opacity:.85}
+.q{position:absolute;right:4px;bottom:4px;background:#000b;color:#fff;font:600 11px system-ui;border-radius:6px;padding:1px 6px;z-index:1}
+.nav{max-width:1100px;margin:12px auto;padding:0 12px;display:flex;gap:8px;align-items:center;justify-content:center;color:#f4e6cf;flex-wrap:wrap}
+.nav input{width:70px;text-align:center}
+.stats{max-width:1100px;margin:0 auto 24px;padding:0 12px;display:flex;gap:14px;flex-wrap:wrap;justify-content:center;color:#d9c7a6;font-size:13px}
+.ov{position:fixed;inset:0;background:#000b;display:none;align-items:flex-end;justify-content:center;z-index:9}
+.ov.on{display:flex}
+.sh{background:#fbf6e6;width:100%;max-width:640px;max-height:92vh;overflow:auto;border-radius:18px 18px 0 0;padding:16px;padding-bottom:calc(16px + env(safe-area-inset-bottom,0px))}
+.sh h3{margin:0 0 10px;font-family:"Bradley Hand","Segoe Print",cursive}
+.det{display:flex;gap:14px}.det .slot{width:42%;flex:none;cursor:default}
+dl{margin:0;display:grid;grid-template-columns:auto 1fr;gap:4px 10px;font-size:14px}dt{color:#8a7650}dd{margin:0}
+.fg{display:grid;grid-template-columns:1fr 1fr;gap:8px}.fg label{font-size:12px;color:#8a7650;display:block}.fg .w{grid-column:1/-1}
+.row{display:flex;gap:8px;margin-top:12px;flex-wrap:wrap}
+.rg{display:grid;grid-template-columns:repeat(auto-fill,minmax(110px,1fr));gap:8px;margin-top:12px}
+.rc{background:#fff;border:1px solid #e0d4b4;border-radius:8px;padding:5px;font-size:12px;cursor:pointer;text-align:left}
+.rc img{width:100%;border-radius:4px;display:block}.rc b{display:block;margin-top:3px}.rc .p{color:#1f7a3d;font-weight:700}
+</style></head><body>
+<div class="top"><h1>📒 My Pokémon Notebook</h1>
+<div><button class="btn g" id="rf">💲 Refresh prices</button> <button class="btn g" id="bk">Backup</button> <button class="btn" id="add">+ Add card</button></div></div>
+<div class="tools"><input id="q" placeholder="Search your notebook…"></div>
+<div class="book"><div class="spread" id="spread"></div></div>
+<div class="nav"><button class="btn" id="prev">‹ Prev</button><span id="pos"></span><input id="jump" type="number" min="1" placeholder="Go to"><button class="btn" id="next">Next ›</button></div>
+<div class="stats" id="st"></div>
+<div class="ov" id="ov"><div class="sh" id="sh"></div></div>
+<input type="file" id="imp" accept="application/json" hidden>
+<script>
+var KEY='pokemon-notebook-v1',PER=9,MINP=28,cards=[],view=0,RES=[],editing=null,tmpImg='';
+var TC={Grass:'#3f9b45',Fire:'#e2582b',Water:'#2f7fd1',Lightning:'#d1a517',Psychic:'#9b4fb5',Fighting:'#a8532b',Darkness:'#3b3a4a',Metal:'#78828f',Dragon:'#b08a22',Fairy:'#d9689f',Colorless:'#8c8c8c',Trainer:'#3d7f8f',Energy:'#6b6b73'};
+var COND=['Mint','Near Mint','Lightly Played','Moderately Played','Heavily Played','Damaged'];
+try{cards=JSON.parse(localStorage.getItem(KEY)||'[]')}catch(e){cards=[]}
+function save(){try{localStorage.setItem(KEY,JSON.stringify(cards))}catch(e){alert('Storage is full. Use Backup, then remove some uploaded photos.')}}
+function $(i){return document.getElementById(i)}
+function esc(s){return String(s==null?'':s).replace(/[&<>"]/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]})}
+function money(n){return '$'+(+n).toFixed(2)}
+function pv(){return matchMedia('(min-width:760px)').matches?2:1}
+function list(){var q=$('q').value.toLowerCase();return q?cards.filter(function(c){return [c.name,c.set,c.type,c.rarity].join(' ').toLowerCase().indexOf(q)>-1}):cards}
+function tp(l){var q=$('q').value,n=q?Math.max(2,Math.ceil(l.length/PER)):Math.max(MINP,Math.ceil((l.length+1)/PER));return n+(n%2)}
+function face(c){var col=TC[c.type]||'#8c8c8c';
+return '<div class="ph" style="background:linear-gradient(160deg,'+col+',#1b1b22)"><b>'+esc(c.name)+'</b><span>'+esc(c.set||'')+' '+esc(c.num||'')+'</span></div>'+(c.img?'<img src="'+esc(c.img)+'" loading="lazy" alt="'+esc(c.name)+'" onerror="this.style.display=\'none\'">':'')}
+function render(){var l=list(),n=tp(l),v=pv();view=Math.max(0,Math.min(view,n-1));view-=view%v;var h='';
+for(var p=view;p<view+v&&p<n;p++){h+='<div class="paper"><div class="grid">';
+for(var s=0;s<PER;s++){var c=l[p*PER+s];h+=c?'<button class="slot f" data-id="'+c.id+'">'+face(c)+(c.qty>1?'<i class="q">×'+c.qty+'</i>':'')+'</button>':'<button class="slot" data-new="1" aria-label="Add card"></button>'}
+h+='</div><div class="pn">— '+(p+1)+' —</div></div>'}
+if(v>1)h+='<div class="rings"></div>';
+$('spread').innerHTML=h;$('pos').textContent='Page '+(view+1)+(v>1?'–'+(view+2):'')+' of '+n;
+var tot=cards.reduce(function(a,c){return a+(+c.qty||1)},0),val=cards.reduce(function(a,c){return a+(+c.value||0)*(+c.qty||1)},0);
+$('st').innerHTML='<span>'+cards.length+' of '+(tp(cards)*PER)+' slots used</span><span>'+tot+' total cards</span><span>Est. value '+money(val)+'</span>'}
+$('spread').onclick=function(e){var b=e.target.closest('.slot');if(!b)return;if(b.dataset.new)openAdd();else detail(b.dataset.id)};
+$('prev').onclick=function(){view-=pv();render()};
+$('next').onclick=function(){view+=pv();render()};
+$('jump').onchange=function(){view=(+this.value||1)-1;this.value='';render()};
+$('q').oninput=function(){view=0;render()};
+window.addEventListener('resize',render);
+function open(h){$('sh').innerHTML=h;$('ov').classList.add('on')}
+function close(){$('ov').classList.remove('on')}
+$('ov').onclick=function(e){if(e.target.id==='ov')close()};
+function byId(id){return cards.filter(function(x){return x.id===id})[0]}
+function openAdd(){open('<h3>Add a card</h3><div class="fg"><div class="w"><input id="s_q" placeholder="Card name (e.g. Charizard)"></div><input id="s_s" placeholder="Set (optional)"><input id="s_n" placeholder="Number (optional)"></div><div class="row"><button class="btn" id="s_go">Search</button><button class="btn g" id="s_man">Add manually</button><button class="btn g" id="s_x">Close</button></div><div id="s_r"></div>');
+$('s_go').onclick=search;$('s_man').onclick=function(){form()};$('s_x').onclick=close;
+$('s_q').onkeydown=function(e){if(e.key==='Enter')search()};$('s_q').focus()}
+function search(){var q=$('s_q').value.trim();if(!q)return;$('s_r').innerHTML='<p>Searching…</p>';
+fetch('/api/search?q='+encodeURIComponent(q)+'&set='+encodeURIComponent($('s_s').value)+'&number='+encodeURIComponent($('s_n').value)).then(function(r){return r.json()}).then(function(d){
+if(d.error)throw new Error(d.error);RES=d;
+$('s_r').innerHTML=d.length?'<div class="rg">'+d.map(function(c,i){var k=Object.keys(c.prices)[0];return '<div class="rc" data-i="'+i+'">'+(c.img?'<img src="'+esc(c.img)+'" alt="">':'')+'<b>'+esc(c.name)+'</b>'+esc(c.set)+' '+esc(c.number)+'<br>'+(k?'<span class="p">'+money(c.prices[k])+'</span> '+esc(k):'no price')+'</div>'}).join('')+'</div>':'<p>No matches. Try fewer words.</p>'}).catch(function(x){$('s_r').innerHTML='<p>'+esc(x.message)+'</p>'})}
+$('sh').addEventListener('click',function(e){var r=e.target.closest('.rc');if(!r)return;var x=RES[+r.dataset.i],k=Object.keys(x.prices)[0];
+cards.push({id:String(Date.now()),apiId:x.id,name:x.name,set:x.set,num:x.number,type:x.type,hp:x.hp,rarity:x.rarity,img:x.img,prices:x.prices,variant:k||'',value:k?x.prices[k]:'',cond:'Near Mint',qty:1,notes:''});
+save();close();$('q').value='';view=Math.floor((cards.length-1)/PER);render()});
+function detail(id){var c=byId(id);if(!c)return;var ks=Object.keys(c.prices||{});
+open('<div class="det"><div class="slot f">'+face(c)+'</div><dl><dt>Name</dt><dd><b>'+esc(c.name)+'</b></dd><dt>Set</dt><dd>'+esc(c.set||'—')+'</dd><dt>Number</dt><dd>'+esc(c.num||'—')+'</dd><dt>Type</dt><dd>'+esc(c.type||'—')+'</dd><dt>HP</dt><dd>'+esc(c.hp||'—')+'</dd><dt>Rarity</dt><dd>'+esc(c.rarity||'—')+'</dd><dt>Condition</dt><dd>'+esc(c.cond||'—')+'</dd><dt>Qty</dt><dd>'+esc(c.qty||1)+'</dd><dt>Value</dt><dd><b>'+(c.value?money(c.value):'—')+'</b> ungraded</dd></dl></div>'
++(ks.length>1?'<div style="margin-top:10px"><label style="font-size:12px;color:#8a7650">Printing (changes price)</label><select id="vsel">'+ks.map(function(k){return '<option value="'+esc(k)+'"'+(k===c.variant?' selected':'')+'>'+esc(k)+' — '+money(c.prices[k])+'</option>'}).join('')+'</select></div>':'')
++(c.notes?'<p>'+esc(c.notes)+'</p>':'')+'<div class="row"><button class="btn" id="d_e">Edit</button><button class="btn d" id="d_d">Delete</button><button class="btn g" id="d_x">Close</button></div>');
+$('d_e').onclick=function(){form(id)};$('d_x').onclick=close;
+$('d_d').onclick=function(){if(!confirm('Remove this card?'))return;cards=cards.filter(function(x){return x.id!==id});save();close();render()};
+if($('vsel'))$('vsel').onchange=function(){c.variant=this.value;c.value=c.prices[this.value];save();render();detail(id)}}
+function fld(k,l,v,t,w){return '<div class="'+(w?'w':'')+'"><label>'+l+'</label><input id="f_'+k+'" type="'+(t||'text')+'" value="'+esc(v)+'"></div>'}
+function form(id){editing=id||null;var c=id?byId(id):{qty:1,type:'Colorless',cond:'Near Mint'};tmpImg=c.img||'';
+var to=Object.keys(TC).map(function(t){return '<option'+(t===c.type?' selected':'')+'>'+t+'</option>'}).join('');
+var co=COND.map(function(t){return '<option'+(t===c.cond?' selected':'')+'>'+t+'</option>'}).join('');
+open('<h3>'+(id?'Edit card':'Add manually')+'</h3><div class="fg">'+fld('name','Name',c.name,'',1)+fld('set','Set',c.set)+fld('num','Card #',c.num)+'<div><label>Type</label><select id="f_type">'+to+'</select></div>'+fld('hp','HP',c.hp)+fld('rarity','Rarity',c.rarity)+'<div><label>Condition</label><select id="f_cond">'+co+'</select></div>'+fld('qty','Quantity',c.qty,'number')+fld('value','Value ($)',c.value,'number')+'<div class="w"><label>Notes</label><textarea id="f_notes" rows="2">'+esc(c.notes||'')+'</textarea></div><div class="w"><label>Your own photo (optional)</label><input id="f_img" type="file" accept="image/*"></div></div><div class="row"><button class="btn" id="f_s">Save</button><button class="btn g" id="f_x">Cancel</button></div>');
+$('f_x').onclick=close;$('f_s').onclick=saveCard;
+$('f_img').onchange=function(e){var f=e.target.files[0];if(!f)return;var r=new FileReader();r.onload=function(){var im=new Image();im.onload=function(){var s=Math.min(1,420/im.width),cv=document.createElement('canvas');cv.width=im.width*s;cv.height=im.height*s;cv.getContext('2d').drawImage(im,0,0,cv.width,cv.height);tmpImg=cv.toDataURL('image/jpeg',.75)};im.src=r.result};r.readAsDataURL(f)}}
+function saveCard(){var n=$('f_name').value.trim();if(!n){alert('Name is required');return}
+var o=editing?byId(editing):{},c=Object.assign({},o,{id:editing||String(Date.now()),img:tmpImg});
+['name','set','num','type','hp','rarity','cond','qty','value','notes'].forEach(function(k){c[k]=$('f_'+k).value.trim()});c.qty=+c.qty||1;
+if(editing)cards=cards.map(function(x){return x.id===editing?c:x});else cards.push(c);
+save();close();render()}
+$('add').onclick=openAdd;
+$('rf').onclick=async function(){var t=cards.filter(function(c){return c.apiId});if(!t.length){alert('Add a card by searching first, then prices can refresh.');return}
+var b=$('rf'),n=0;b.disabled=true;b.textContent='Updating…';
+try{for(var i=0;i<t.length;i+=20){var ids=t.slice(i,i+20).map(function(c){return c.apiId}).join(',');
+var d=await (await fetch('/api/cards?ids='+encodeURIComponent(ids))).json();if(d.error)throw new Error(d.error);
+d.forEach(function(x){t.forEach(function(c){if(c.apiId===x.id){c.prices=x.prices;var k=x.prices[c.variant]!=null?c.variant:Object.keys(x.prices)[0];if(k){c.variant=k;c.value=x.prices[k]}n++}})})}
+save();render();alert('Updated prices for '+n+' cards.')}catch(e){alert('Price refresh failed: '+e.message)}
+b.disabled=false;b.textContent='💲 Refresh prices'};
+$('bk').onclick=function(){open('<h3>Backup</h3><p>Your notebook is saved in this browser. Export a file to keep it safe or move it to another phone or computer.</p><div class="row"><button class="btn" id="b_e">Export file</button><button class="btn g" id="b_i">Import file</button><button class="btn g" id="b_x">Close</button></div>');
+$('b_x').onclick=close;$('b_i').onclick=function(){$('imp').click()};
+$('b_e').onclick=function(){var a=document.createElement('a');a.href='data:application/json;charset=utf-8,'+encodeURIComponent(JSON.stringify(cards));a.download='pokemon-notebook.json';a.click()}};
+$('imp').onchange=function(e){var f=e.target.files[0];if(!f)return;var r=new FileReader();r.onload=function(){try{var d=JSON.parse(r.result);if(Array.isArray(d)){cards=d;save();close();render()}}catch(x){alert('That file could not be read.')}};r.readAsText(f)};
+render();
+</script></body></html>
